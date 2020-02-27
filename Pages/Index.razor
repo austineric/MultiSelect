@@ -1,0 +1,49 @@
+﻿@page "/"
+
+My goal is to pre-populate a value (for example Sales Agent) that cannot be removed, and to allow a maximum of three selections (Sales Agent + 2 others)
+<br />
+This approach does both those things but rearranges the values in the order of the data source
+<br />
+Is there a way to achieve the goal stated above but also avoid the order switching?
+
+<br />
+<br />
+
+<TelerikMultiSelect Data="@Roles" Value="@TheValues" ValueChanged="@( (List<string> v) => MyValueChangeHandler(v) )" ClearButton="false"/> 
+
+<br />
+<br />
+
+<ul>
+    @foreach (var item in TheValues)
+    {
+        <li>@item</li>
+    }
+</ul>
+
+@code{
+
+    List<string> TheValues { get; set; } = new List<string>();
+    List<string> Roles { get; set; } = new List<string> {
+        "Manager", "Developer", "QA", "Technical Writer", "Support Engineer", "Sales Agent", "Architect", "Designer"
+    };
+
+    protected override void OnInitialized()
+    {
+        TheValues.Add("Sales Agent");
+    }
+
+    void MyValueChangeHandler(List<string> values)
+    {
+
+        if (!values.Contains("Sales Agent"))
+        {
+            values.Insert(0, "Sales Agent");
+        }
+
+        TheValues.Clear();
+        TheValues = values.Take(3).ToList();
+
+    }
+
+}
